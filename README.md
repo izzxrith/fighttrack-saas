@@ -7,4 +7,4 @@ every other gym's.
 Built by Ayet (github.com/izzxrith) - boxer and developer.
 
 ## Status
-🚧 In development.
+Still in development.

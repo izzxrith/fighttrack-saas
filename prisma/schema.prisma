@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  COACH
+  FIGHTER
+}
+
+model Gym {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String?  @unique
+  owner     User?    @relation("GymOwner", fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+
+  users User[] @relation("GymUsers")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  gymId        String
+  gym          Gym      @relation("GymUsers", fields: [gymId], references: [id])
+  ownsGym      Gym?     @relation("GymOwner")
+  createdAt    DateTime @default(now())
+
+  @@index([gymId])
+}
+
+model Fighter {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  gymId       String
+  weightClass String?
+  stance      String?
+  createdAt   DateTime @default(now())
+
+  @@index([gymId])
+}
