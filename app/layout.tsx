@@ -1,31 +1,12 @@
-import type { Metadata } from "next";
-import { Oswald, Inter } from "next/font/google";
-import "./globals.css";
+import { Barlow, Barlow_Condensed } from "next/font/google";
 
-const oswald = Oswald({
+const display = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-oswald",
+  weight: ["600", "700"],
+  variable: "--font-barlow-condensed",
 });
-
-const inter = Inter({
+const body = Barlow({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600"],
+  variable: "--font-barlow",
 });
-
-export const metadata: Metadata = {
-  title: "FightTrack",
-  description: "Training and fight records for boxing gyms.",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en" className={`${oswald.variable} ${inter.variable}`}>
-      <body className="font-body antialiased">{children}</body>
-    </html>
-  );
-}

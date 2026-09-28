@@ -4,15 +4,22 @@
   --color-ink: #161311;
   --color-canvas: #EDE7DD;
   --color-hide: #2A241E;
-  --color-rope: #8A7B68;
+  --color-rope: #A39482;
   --color-corner: #B3402A;
   --color-canvas-muted: #C9C0AF;
+}
 
-  --font-display: var(--font-oswald);
-  --font-body: var(--font-inter);
+@theme inline {
+  --font-display: var(--font-barlow-condensed);
+  --font-body: var(--font-barlow);
 }
 
 body {
   background-color: var(--color-ink);
   color: var(--color-canvas);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-corner);
+  outline-offset: 2px;
 }
