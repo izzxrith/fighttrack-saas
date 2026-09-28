@@ -8,3 +8,6 @@ Built by Ayet (github.com/izzxrith) - boxer and developer.
 
 ## Status
 Still in development.
+
+## Client
+This is dedicated for my own boxing gym and also for boxing gym community out there.
