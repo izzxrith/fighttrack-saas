@@ -18,7 +18,8 @@ model Gym {
   owner     User?    @relation("GymOwner", fields: [ownerId], references: [id])
   createdAt DateTime @default(now())
 
-  users User[] @relation("GymUsers")
+  users    User[]    @relation("GymUsers")
+  fighters Fighter[]
 }
 
 model User {
@@ -29,6 +30,7 @@ model User {
   gymId        String
   gym          Gym      @relation("GymUsers", fields: [gymId], references: [id])
   ownsGym      Gym?     @relation("GymOwner")
+  fighter      Fighter?
   createdAt    DateTime @default(now())
 
   @@index([gymId])
@@ -37,7 +39,9 @@ model User {
 model Fighter {
   id          String   @id @default(cuid())
   userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
   gymId       String
+  gym         Gym      @relation(fields: [gymId], references: [id])
   weightClass String?
   stance      String?
   createdAt   DateTime @default(now())
