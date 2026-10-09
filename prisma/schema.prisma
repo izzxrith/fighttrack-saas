@@ -42,9 +42,34 @@ model Fighter {
   user        User     @relation(fields: [userId], references: [id])
   gymId       String
   gym         Gym      @relation(fields: [gymId], references: [id])
+  sessions    TrainingSession[]
   weightClass String?
   stance      String?
   createdAt   DateTime @default(now())
 
   @@index([gymId])
+}
+
+enum SessionType {
+  SPARRING
+  BAG_WORK
+  CONDITIONING
+  TECHNIQUE
+  RECOVERY
+  OTHER
+}
+
+model TrainingSession {
+  id          String      @id @default(cuid())
+  fighterId   String
+  fighter     Fighter     @relation(fields: [fighterId], references: [id], onDelete: Cascade)
+  gymId       String
+  type        SessionType
+  durationMin Int
+  notes       String?
+  date        DateTime
+  createdAt   DateTime    @default(now())
+
+  @@index([gymId])
+  @@index([fighterId])
 }
