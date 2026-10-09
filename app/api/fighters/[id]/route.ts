@@ -18,7 +18,10 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
   // caller's own gym, so another gym's fighter can never be returned.
   const fighter = await prisma.fighter.findFirst({
     where: { id, gymId: session.gymId },
-    include: { user: { select: { email: true } } },
+    include: {
+      user: { select: { email: true } },
+      sessions: { orderBy: { date: "desc" } },
+    },
   });
 
   if (!fighter) {
