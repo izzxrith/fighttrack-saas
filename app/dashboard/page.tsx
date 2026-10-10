@@ -85,19 +85,21 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <ul className="mt-6 space-y-3">
+          <ul className="mt-6 space-y-3">
           {fighters.map((f) => (
-            <li
-              key={f.id}
-              className="rounded border border-rope/30 bg-hide px-4 py-3"
-            >
-              <p className="text-canvas">{f.user.email}</p>
-              <p className="mt-0.5 text-sm text-canvas-muted">
-                {f.weightClass ?? "No weight class set"}
-                {f.stance ? ` · ${f.stance}` : ""}
-              </p>
+            <li key={f.id}>
+              <Link
+                href={`/dashboard/fighters/${f.id}`}
+                className="block rounded border border-rope/30 bg-hide px-4 py-3 hover:border-rope/60"
+              >
+                <p className="text-canvas">{f.user.email}</p>
+                <p className="mt-0.5 text-sm text-canvas-muted">
+                  {f.weightClass ?? "No weight class set"}
+                  {f.stance ? ` · ${f.stance}` : ""}
+                </p>
+              </Link>
             </li>
-          ))}
+            ))}
         </ul>
       </div>
     </main>
