@@ -14,8 +14,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Sign in to continue." }, { status: 401 });
   }
 
-  const fighters = await prisma.fighter.findMany({
-    where: { gymId: session.gymId },
+    const fighters = await prisma.fighter.findMany({
+    where: {
+      gymId: session.gymId,
+      // Fighter accounts only ever see themselves. Coaches see the whole gym.
+      ...(session.role === Role.FIGHTER ? { userId: session.userId } : {}),
+    },
     include: { user: { select: { email: true } } },
     orderBy: { createdAt: "desc" },
   });
