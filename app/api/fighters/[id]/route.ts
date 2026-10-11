@@ -21,6 +21,7 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
     include: {
       user: { select: { email: true } },
       sessions: { orderBy: { date: "desc" } },
+      fightRecords: { orderBy: { date: "desc" } },
     },
   });
 

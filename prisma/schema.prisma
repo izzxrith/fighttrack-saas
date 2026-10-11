@@ -11,6 +11,22 @@ enum Role {
   FIGHTER
 }
 
+enum SessionType {
+  SPARRING
+  BAG_WORK
+  CONDITIONING
+  TECHNIQUE
+  RECOVERY
+  OTHER
+}
+
+enum FightResult {
+  WIN
+  LOSS
+  DRAW
+  NO_CONTEST
+}
+
 model Gym {
   id        String   @id @default(cuid())
   name      String
@@ -37,27 +53,18 @@ model User {
 }
 
 model Fighter {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id])
-  gymId       String
-  gym         Gym      @relation(fields: [gymId], references: [id])
-  sessions    TrainingSession[]
+  id           String            @id @default(cuid())
+  userId       String            @unique
+  user         User              @relation(fields: [userId], references: [id])
+  gymId        String
+  gym          Gym               @relation(fields: [gymId], references: [id])
+  weightClass  String?
+  stance       String?
+  createdAt    DateTime          @default(now())
+  sessions     TrainingSession[]
   fightRecords FightRecord[]
-  weightClass String?
-  stance      String?
-  createdAt   DateTime @default(now())
 
   @@index([gymId])
-}
-
-enum SessionType {
-  SPARRING
-  BAG_WORK
-  CONDITIONING
-  TECHNIQUE
-  RECOVERY
-  OTHER
 }
 
 model TrainingSession {
@@ -71,11 +78,8 @@ model TrainingSession {
   date        DateTime
   createdAt   DateTime    @default(now())
 
-enum FightResult {
-  WIN
-  LOSS
-  DRAW
-  NO_CONTEST
+  @@index([gymId])
+  @@index([fighterId])
 }
 
 model FightRecord {
