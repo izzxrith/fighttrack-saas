@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { nameField, emailField, noteField } from "./sanitize";
+import { nameField, emailField, noteField, cleanLine } from "./sanitize";
 
 // Passwords are never trimmed or normalized: changing them would change what
 // the user typed. bcrypt only reads the first 72 bytes, so cap at 72 bytes.
@@ -46,4 +46,19 @@ export const createSessionSchema = z.object({
     .max(600, "That's longer than any real session."),
   notes: noteField(2000).optional(),
   date: z.string().datetime("That date isn't valid."),
+});
+
+export const createFightRecordSchema = z.object({
+  fighterId: z.string().cuid("That fighter ID isn't valid."),
+  opponent: nameField("Opponent", 1, 120),
+  result: z.enum(["WIN", "LOSS", "DRAW", "NO_CONTEST"], {
+    errorMap: () => ({ message: "Pick a valid result." }),
+  }),
+  date: z.string().datetime("That date isn't valid."),
+  weightClass: z
+    .string()
+    .transform(cleanLine)
+    .pipe(z.string().max(30, "Weight class is too long."))
+    .optional(),
+  notes: noteField(2000).optional(),
 });
