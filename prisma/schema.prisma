@@ -43,6 +43,7 @@ model Fighter {
   gymId       String
   gym         Gym      @relation(fields: [gymId], references: [id])
   sessions    TrainingSession[]
+  fightRecords FightRecord[]
   weightClass String?
   stance      String?
   createdAt   DateTime @default(now())
@@ -68,6 +69,25 @@ model TrainingSession {
   durationMin Int
   notes       String?
   date        DateTime
+  createdAt   DateTime    @default(now())
+
+enum FightResult {
+  WIN
+  LOSS
+  DRAW
+  NO_CONTEST
+}
+
+model FightRecord {
+  id          String      @id @default(cuid())
+  fighterId   String
+  fighter     Fighter     @relation(fields: [fighterId], references: [id], onDelete: Cascade)
+  gymId       String
+  opponent    String
+  result      FightResult
+  date        DateTime
+  weightClass String?
+  notes       String?
   createdAt   DateTime    @default(now())
 
   @@index([gymId])
