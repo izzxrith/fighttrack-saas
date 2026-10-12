@@ -22,6 +22,7 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
       user: { select: { email: true } },
       sessions: { orderBy: { date: "desc" } },
       fightRecords: { orderBy: { date: "desc" } },
+      trainingPlans: { orderBy: { createdAt: "desc" } },
     },
   });
 
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "Fighter not found." }, { status: 404 });
   }
 
-  return NextResponse.json({ fighter });
+  return NextResponse.json({ fighter, viewerRole: session.role });
 }
 
 // Remove one fighter (coach only)

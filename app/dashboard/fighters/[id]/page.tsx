@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import TrainingPlans, { type TrainingPlan } from "./TrainingPlans";
 
 type TrainingSession = {
   id: string;
@@ -28,6 +29,7 @@ type FighterDetail = {
   user: { email: string };
   sessions: TrainingSession[];
   fightRecords: FightRecord[];
+  trainingPlans: TrainingPlan[];
 };
 
 const SESSION_TYPES: { value: string; label: string }[] = [
@@ -61,6 +63,7 @@ export default function FighterPage() {
   const router = useRouter();
 
   const [fighter, setFighter] = useState<FighterDetail | null>(null);
+  const [viewerRole, setViewerRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -94,6 +97,7 @@ export default function FighterPage() {
       }
       const data = await res.json();
       setFighter(data.fighter);
+      setViewerRole(data.viewerRole);
     } catch {
       setNotFound(true);
     } finally {
@@ -212,6 +216,14 @@ export default function FighterPage() {
           {wins}-{losses}-{draws}
           <span className="ml-2 text-sm font-normal text-canvas-muted">W-L-D</span>
         </p>
+
+        {/* Training plans */}
+        <TrainingPlans
+          fighterId={fighter.id}
+          plans={fighter.trainingPlans}
+          isCoach={viewerRole === "COACH"}
+          onSaved={loadFighter}
+        />
 
         {/* Sessions */}
         <section className="mt-8 rounded border border-rope/30 bg-hide p-5">
