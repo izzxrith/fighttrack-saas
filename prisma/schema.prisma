@@ -63,6 +63,7 @@ model Fighter {
   createdAt    DateTime          @default(now())
   sessions     TrainingSession[]
   fightRecords FightRecord[]
+  trainingPlans TrainingPlan[]
 
   @@index([gymId])
 }
@@ -93,6 +94,20 @@ model FightRecord {
   weightClass String?
   notes       String?
   createdAt   DateTime    @default(now())
+
+  @@index([gymId])
+  @@index([fighterId])
+}
+
+model TrainingPlan {
+  id          String   @id @default(cuid())
+  fighterId   String
+  fighter     Fighter  @relation(fields: [fighterId], references: [id], onDelete: Cascade)
+  gymId       String
+  coachId     String
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
 
   @@index([gymId])
   @@index([fighterId])

@@ -62,3 +62,9 @@ export const createFightRecordSchema = z.object({
     .optional(),
   notes: noteField(2000).optional(),
 });
+
+export const createTrainingPlanSchema = z.object({
+  fighterId: z.string().cuid("That fighter ID isn't valid."),
+  title: nameField("Title", 1, 120),
+  description: noteField(2000).optional(),
+});
