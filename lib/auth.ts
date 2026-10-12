@@ -24,15 +24,24 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
+// Login compares against this when the email doesn't exist, so a missing user
+// costs the same time as a wrong password.
+export const DUMMY_HASH = bcrypt.hashSync("fighttrack-dummy-password", 12);
+
 export function signSession(payload: SessionPayload): string {
-  return jwt.sign(payload, JWT_SECRET as string, { expiresIn: ACCESS_TOKEN_TTL });
+  return jwt.sign(payload, JWT_SECRET as string, {
+    expiresIn: ACCESS_TOKEN_TTL,
+    algorithm: "HS256",
+  });
 }
 
 export function verifySession(token: string): SessionPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET as string) as SessionPayload;
+    return jwt.verify(token, JWT_SECRET as string, {
+      algorithms: ["HS256"],
+    }) as SessionPayload;
   } catch {
-    // Expired or tampered — treat as logged out, never leak why to the client.
+    // Expired or tampered. Treat as logged out and never leak why.
     return null;
   }
 }
