@@ -22,8 +22,8 @@ export default function HomePage() {
             Run your fight camp from one place.
           </h1>
           <p className="mt-6 text-lg text-canvas-muted">
-            Log sessions, keep every fighter's record, and hand out training plans.
-            Each gym's data stays private to that gym.
+            Log sessions, keep every fighter&apos;s record, and hand out training plans.
+            Each gym&apos;s data stays private to that gym.
           </p>
           <Link
             href="/signup"
@@ -34,7 +34,7 @@ export default function HomePage() {
         </section>
 
         <section aria-label="Sample training log" className="rounded border border-rope/30 bg-hide p-6">
-          <h2 className="font-display text-xl font-semibold">Today's log</h2>
+          <h2 className="font-display text-xl font-semibold">Today&apos;s log</h2>
           <table className="mt-4 w-full text-left text-sm">
             <thead className="text-rope">
               <tr>

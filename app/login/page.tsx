@@ -90,7 +90,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-sm text-canvas-muted">
-          Don't have a gym yet?{" "}
+          Don&apos;t have a gym yet?{" "}
           <Link href="/signup" className="text-canvas underline">
             Create one
           </Link>

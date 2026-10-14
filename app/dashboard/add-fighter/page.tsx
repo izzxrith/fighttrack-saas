@@ -56,7 +56,7 @@ export default function AddFighterPage() {
         </Link>
         <h1 className="mt-4 font-display text-2xl font-bold">Add a fighter</h1>
         <p className="mt-1 text-canvas-muted">
-          They'll sign in with this email and password.
+          They&apos;ll sign in with this email and password.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">

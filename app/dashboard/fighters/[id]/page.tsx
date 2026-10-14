@@ -66,6 +66,7 @@ export default function FighterPage() {
   const [viewerRole, setViewerRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // session form
   const [type, setType] = useState("SPARRING");
@@ -84,30 +85,43 @@ export default function FighterPage() {
   const [savingFight, setSavingFight] = useState(false);
   const [fightError, setFightError] = useState<string | null>(null);
 
-  const loadFighter = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/fighters/${id}`);
-      if (res.status === 401) {
-        router.push("/login");
-        return;
-      }
-      if (res.status === 404) {
-        setNotFound(true);
-        return;
-      }
-      const data = await res.json();
-      setFighter(data.fighter);
-      setViewerRole(data.viewerRole);
-    } catch {
-      setNotFound(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [id, router]);
-
+  // Fetches on first load and again whenever reloadKey changes. State is only
+  // set inside the promise callbacks, never synchronously in the effect body.
   useEffect(() => {
-    loadFighter();
-  }, [loadFighter]);
+    let ignore = false;
+
+    fetch(`/api/fighters/${id}`)
+      .then(async (res) => {
+        if (ignore) return;
+        if (res.status === 401) {
+          router.push("/login");
+          return;
+        }
+        if (res.status === 404) {
+          setNotFound(true);
+          return;
+        }
+        const data = await res.json();
+        if (ignore) return;
+        setFighter(data.fighter);
+        setViewerRole(data.viewerRole);
+      })
+      .catch(() => {
+        if (!ignore) setNotFound(true);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [id, router, reloadKey]);
+
+  // Call this after saving anything to refresh the page data.
+  const reload = useCallback(async () => {
+    setReloadKey((k) => k + 1);
+  }, []);
 
   async function handleLogSession(e: React.FormEvent) {
     e.preventDefault();
@@ -131,7 +145,7 @@ export default function FighterPage() {
         return;
       }
       setNotes("");
-      await loadFighter();
+      await reload();
     } catch {
       setSessionError("Couldn't reach the server. Check your connection and try again.");
     } finally {
@@ -164,7 +178,7 @@ export default function FighterPage() {
       setOpponent("");
       setFightWeightClass("");
       setFightNotes("");
-      await loadFighter();
+      await reload();
     } catch {
       setFightError("Couldn't reach the server. Check your connection and try again.");
     } finally {
@@ -187,7 +201,7 @@ export default function FighterPage() {
     return (
       <main className="min-h-screen px-6 py-10 md:px-12">
         <div className="mx-auto max-w-2xl">
-          <p className="text-canvas">We couldn't find that fighter.</p>
+          <p className="text-canvas">We couldn&apos;t find that fighter.</p>
           <Link href="/dashboard" className="mt-2 inline-block text-sm text-canvas-muted underline">
             Back to your fighters
           </Link>
@@ -222,7 +236,7 @@ export default function FighterPage() {
           fighterId={fighter.id}
           plans={fighter.trainingPlans}
           isCoach={viewerRole === "COACH"}
-          onSaved={loadFighter}
+          onSaved={reload}
         />
 
         {/* Sessions */}
