@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # Placeholders only. CI never touches a real database or real secrets.
+      DATABASE_URL: "postgresql://user:pass@localhost:5432/ci"
+      DIRECT_URL: "postgresql://user:pass@localhost:5432/ci"
+      JWT_SECRET: "ci-only-placeholder-secret"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
