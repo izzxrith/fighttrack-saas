@@ -14,6 +14,7 @@ type Fighter = {
 export default function DashboardPage() {
   const router = useRouter();
   const [fighters, setFighters] = useState<Fighter[]>([]);
+  const [viewerRole, setViewerRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +28,10 @@ export default function DashboardPage() {
         return res.json();
       })
       .then((data) => {
-        if (data) setFighters(data.fighters);
+        if (data) {
+          setFighters(data.fighters);
+          setViewerRole(data.viewerRole);
+        }
       })
       .catch(() => setError("Couldn't load your fighters. Try refreshing the page."))
       .finally(() => setLoading(false));
@@ -38,24 +42,37 @@ export default function DashboardPage() {
     router.push("/login");
   }
 
+  const isCoach = viewerRole === "COACH";
+  const count = fighters.length;
+
   return (
     <main className="min-h-screen px-6 py-10 md:px-12">
       <div className="mx-auto max-w-3xl">
-        <header className="flex items-start justify-between gap-4">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="font-display text-3xl font-bold">Your fighters</h1>
-            <p className="mt-1 text-canvas-muted">Everyone training under your gym.</p>
+            <h1 className="font-display text-3xl font-bold">
+              {viewerRole === "FIGHTER" ? "Your profile" : "Your fighters"}
+            </h1>
+            <p className="mt-1 text-canvas-muted">
+              {viewerRole === "FIGHTER"
+                ? "Your sessions, fights, and training plans."
+                : loading
+                  ? "Everyone training under your gym."
+                  : `${count} ${count === 1 ? "fighter" : "fighters"} in your gym.`}
+            </p>
           </div>
           <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard/add-fighter"
-              className="rounded bg-corner px-4 py-2 text-sm font-medium text-canvas hover:brightness-110"
-            >
-              Add a fighter
-            </Link>
+            {isCoach && (
+              <Link
+                href="/dashboard/add-fighter"
+                className="rounded bg-corner px-4 py-2 text-sm font-medium text-canvas hover:brightness-110"
+              >
+                Add a fighter
+              </Link>
+            )}
             <button
               onClick={handleSignOut}
-              className="text-sm text-canvas-muted hover:text-canvas"
+              className="py-2 text-sm text-canvas-muted hover:text-canvas"
             >
               Sign out
             </button>
@@ -76,7 +93,7 @@ export default function DashboardPage() {
           </p>
         )}
 
-        {!loading && !error && fighters.length === 0 && (
+        {!loading && !error && count === 0 && (
           <div className="mt-8 rounded border border-dashed border-rope/40 p-6">
             <p className="text-canvas">No fighters yet.</p>
             <p className="mt-1 text-canvas-muted">
@@ -85,21 +102,21 @@ export default function DashboardPage() {
           </div>
         )}
 
-          <ul className="mt-6 space-y-3">
+        <ul className="mt-6 space-y-3">
           {fighters.map((f) => (
             <li key={f.id}>
               <Link
                 href={`/dashboard/fighters/${f.id}`}
                 className="block rounded border border-rope/30 bg-hide px-4 py-3 hover:border-rope/60"
               >
-                <p className="text-canvas">{f.user.email}</p>
+                <p className="break-all text-canvas">{f.user.email}</p>
                 <p className="mt-0.5 text-sm text-canvas-muted">
                   {f.weightClass ?? "No weight class set"}
                   {f.stance ? ` · ${f.stance}` : ""}
                 </p>
               </Link>
             </li>
-            ))}
+          ))}
         </ul>
       </div>
     </main>
