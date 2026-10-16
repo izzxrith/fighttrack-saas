@@ -15,7 +15,7 @@ const body = Barlow({
 });
 
 export const metadata: Metadata = {
-  title: "FightTrack",
+  title: { default: "FightTrack", template: "%s · FightTrack" },
   description: "Training and fight records for boxing gyms.",
 };
 
