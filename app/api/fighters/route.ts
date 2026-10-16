@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json({ fighters });
+  return NextResponse.json({ fighters, viewerRole: session.role });
 }
 
 export async function POST(req: NextRequest) {
