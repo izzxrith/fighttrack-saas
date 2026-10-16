@@ -19,7 +19,20 @@ body {
   color: var(--color-canvas);
 }
 
+/* iOS Safari zooms the whole page when you focus an input smaller than 16px */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-corner);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse {
+    animation: none;
+  }
 }
