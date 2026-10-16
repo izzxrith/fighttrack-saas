@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import TrainingPlans, { type TrainingPlan } from "./TrainingPlans";
+import RemoveFighter from "./RemoveFighter";
 
 type TrainingSession = {
   id: string;
@@ -483,6 +484,9 @@ export default function FighterPage() {
             </ul>
           )}
         </section>
+                  {viewerRole === "COACH" && (
+                      <RemoveFighter fighterId={fighter.id} email={fighter.user.email} />
+                  )}
       </div>
     </main>
   );
